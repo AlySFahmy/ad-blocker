@@ -51,20 +51,20 @@ function buildRules(domains) {
 }
 
 async function main() {
-  console.log('🔄 Fetching EasyList...');
+  console.log('Fetching EasyList...');
   const text = await fetchEasyList(EASYLIST_URL);
 
-  console.log('🔍 Extracting domains...');
+  console.log('Extracting domains...');
   const domains = extractDomains(text);
-  console.log(`✅ Found ${domains.length} unique domains`);
+  console.log(`Found ${domains.length} unique domains`);
 
-  console.log('🔧 Building Chrome rules...');
+  console.log('Building Chrome rules...');
   const rules = buildRules(domains.slice(0, 30000)); 
 
   fs.writeFileSync('rules.json', JSON.stringify(rules, null, 2));
-  console.log('💾 Saved to rules.json');
+  console.log('Saved to rules.json');
 }
 
 main().catch(err => {
-  console.error('❌ Error:', err);
+  console.error(' Error:', err);
 });
