@@ -16,6 +16,7 @@ function fetchEasyList(url) {
   });
 }
 
+
 function extractDomains(easylistText) {
   const domainSet = new Set();
 
@@ -68,3 +69,4 @@ async function main() {
 main().catch(err => {
   console.error(' Error:', err);
 });
+
