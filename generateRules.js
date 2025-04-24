@@ -1,26 +1,24 @@
 
-// const fs = require('fs');
-
-// const domains = fs.readFileSync('blocklist.txt', 'utf-8')
-//   .split('\n')
-//   .map(line => line.trim())
-//   .filter(Boolean);
-
-// const rules = domains.map((domain, index) => ({
-//   id: index + 1,
-//   priority: 1,
-//   action: { type: 'block' },
-//   condition: {
-//     urlFilter: domain,
-//     resourceTypes: ['script', 'image', 'xmlhttprequest']
-//   }
-// }));
-
-// fs.writeFileSync('rules.json', JSON.stringify(rules, null, 2));
-// console.log(`✅ Generated ${rules.length} rules`);
 
 const https = require('https');
 const fs = require('fs');
+
+
+
+
+// Set of domains that should NOT be blocked
+const safeList = new Set([
+  "openai.com",
+  "cdn.jsdelivr.net",
+  "github.com",
+  "cloudflare.com",
+  "cloudflareinsights.com",
+  "googleapis.com",
+  "fonts.googleapis.com",
+  "fonts.gstatic.com"
+]);
+
+
 
 
 const EASYLIST_URL = 'https://easylist.to/easylist/easylist.txt';
@@ -70,18 +68,27 @@ function buildRules(domains) {
 }
 
 async function main() {
-  console.log('🔄 Fetching EasyList...');
+  console.log('Fetching EasyList...');
   const text = await fetchEasyList(EASYLIST_URL);
 
-  console.log('🔍 Extracting domains...');
+  console.log('Extracting domains...');
   const domains = extractDomains(text);
-  console.log(`✅ Found ${domains.length} unique domains`);
+  console.log(`Found ${domains.length} unique domains`);
 
-  console.log('🔧 Building Chrome rules...');
-  const rules = buildRules(domains.slice(0, 30000)); 
-
+  console.log('Filtering out safe domains...');
+  const filteredDomains = domains.filter(domain => {
+    if (safeList.has(domain)) {
+      console.log(`Skipping safe domain: ${domain}`);
+      return false;
+    }
+    return true;
+  });
+  
+  console.log(`Building Chrome rules from ${filteredDomains.length} domains...`);
+  const rules = buildRules(filteredDomains.slice(0, 30000));
+  
   fs.writeFileSync('rules.json', JSON.stringify(rules, null, 2));
-  console.log('💾 Saved to rules.json');
+  console.log('Saved to rules.json');
 }
 
 main().catch(err => {
