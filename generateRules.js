@@ -33,6 +33,7 @@ function fetchEasyList(url) {
   });
 }
 
+
 function extractDomains(easylistText) {
   const domainSet = new Set();
 
@@ -83,14 +84,16 @@ async function main() {
     }
     return true;
   });
-  
+
   console.log(`Building Chrome rules from ${filteredDomains.length} domains...`);
   const rules = buildRules(filteredDomains.slice(0, 30000));
-  
+
   fs.writeFileSync('rules.json', JSON.stringify(rules, null, 2));
   console.log('Saved to rules.json');
 }
 
+
 main().catch(err => {
-  console.error('❌ Error:', err);
+  console.error(' Error:', err);
 });
+
