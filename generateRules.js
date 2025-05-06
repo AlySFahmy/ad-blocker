@@ -8,6 +8,11 @@ const fs = require('fs');
 
 // Set of domains that should NOT be blocked
 const safeList = new Set([
+  "github.githubassets.com", 
+  "github.com",  
+  "cdnjs.cloudflare.com",
+  "googleusercontent.com",   
+  "gstatic.com",    
   "openai.com",
   "cdn.jsdelivr.net",
   "github.com",
